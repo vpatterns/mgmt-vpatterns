@@ -10,6 +10,7 @@ The following table provide information about what are the expected variables in
 
 | Variable                              | Description                                                                                                    | Example                                                         |
 |---------------------------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| `clusterGroup.nodes[n]` | List of nodes that allows you to add labels.          | `m-m00.mgmt2.dc.domain.es` |
 | `mgmt.cluster.name`                   | The name of the management cluster.                                                                           | `mgmt2`                                                         |
 | `mgmt.cluster.location`               | Physical or logical location of the management cluster.                                                        | `dc`                                                            |
 | `mgmt.cluster.domain`                 | Domain used for the management cluster.                                                                       | `domain.es`                                                     |
