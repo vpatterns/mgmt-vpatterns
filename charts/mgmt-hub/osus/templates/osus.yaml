@@ -1,0 +1,11 @@
+---
+apiVersion: updateservice.operator.openshift.io/v1
+kind: UpdateService
+metadata:
+  name: osus
+  namespace: openshift-update-service
+spec:
+  replicas: 2
+  releases: quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.mgmt_location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift/release-images
+  graphDataImage: quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.mgmt_location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift/graph-image:latest
+

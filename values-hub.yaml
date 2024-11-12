@@ -1,0 +1,582 @@
+# File name depends clusterGroupName in values-global.yaml
+
+clusterGroup:
+  name: hub
+  isHubCluster: true
+
+  # Add storage labels to OpenShift nodes
+    # Nodes names should be modified
+  nodes:
+  - m-m00.mgmt2.dc.domain.es:
+      labels:
+        cluster.ocs.openshift.io/openshift-storage: ""
+  - m-m01.mgmt2.dc.domain.es:
+      labels:
+        cluster.ocs.openshift.io/openshift-storage: ""
+  - m-m02.mgmt2.dc.domain.es:
+      labels:
+        cluster.ocs.openshift.io/openshift-storage: ""
+  - m-w00.mgmt2.dc.domain.es:
+      labels:
+        cluster.ocs.openshift.io/openshift-storage: ""
+  - m-w01.mgmt2.dc.domain.es:
+      labels:
+        cluster.ocs.openshift.io/openshift-storage: ""
+  - m-w02.mgmt2.dc.domain.es:
+      labels:
+        cluster.ocs.openshift.io/openshift-storage: ""
+
+  # Set masters schedulables
+  mastersSchedulable: true
+
+  namespaces:
+  - prom-kafka-adapter
+  - mano-apps
+  - ztp
+  - fabric-manager
+  - openshift-operators-redhat
+  - metallb-system:
+      operatorGroup: true
+      targetNamespaces: null
+      labels:
+        openshift.io/cluster-monitoring: "true"
+  - open-cluster-management:
+      operatorGroup: true
+  - multicluster-engine:
+      operatorGroup: true
+      labels:
+        openshift.io/cluster-monitoring: "true"
+  - openshift-nmstate:
+      operatorGroup: true
+  - openshift-local-storage:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - openshift-storage:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - openshift-cnv:
+      operatorGroup: true
+  - quay-enterprise:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - kafka-cluster:
+      operatorGroup: true
+  - openshift-logging:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - service-telemetry:
+      operatorGroup: true
+  - cert-manager-operator:
+      operatorGroup: true
+  - ansible-automation-platform:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - openshift-update-service:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - openshift-adp:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+  - rhacs-operator:
+      labels:
+        openshift.io/cluster-monitoring: "true"
+      operatorGroup: true
+      targetNamespaces: null
+
+  subscriptions:
+    advanced-cluster-management:
+      name: advanced-cluster-management
+      namespace: open-cluster-management
+      channel: release-2.10
+      csv: advanced-cluster-management.v2.10.6
+
+    multicluster-engine:
+      name: multicluster-engine
+      namespace: multicluster-engine
+      channel: stable-2.5
+      csv: multicluster-engine.v2.5.7
+
+    kubernetes-nmstate-operator:
+      name: kubernetes-nmstate-operator
+      namespace: openshift-nmstate  
+      channel: stable
+      csv: kubernetes-nmstate-operator.4.14.0-202410162010
+
+    local-storage-operator:
+      name: local-storage-operator
+      namespace: openshift-local-storage
+      channel: stable
+      csv: local-storage-operator.v4.14.0-202410091239
+
+    odf-operator:
+      name: odf-operator
+      namespace: openshift-storage  
+      channel: stable-4.14
+      csv: odf-operator.v4.14.11-rhodf
+
+    kubevirt-hyperconverged:
+      name: kubevirt-hyperconverged
+      namespace: openshift-cnv
+      channel: stable
+      csv: kubevirt-hyperconverged-operator.v4.14.9
+
+    quay-operator:
+      name: quay-operator
+      namespace: quay-enterprise    
+      channel: stable-3.11
+      csv: quay-operator.v3.11.6
+
+    cluster-observability-operator:
+      name: cluster-observability-operator
+      namespace: openshift-operators
+      channel: development
+      csv: cluster-observability-operator.0.4.1
+
+    openshift-cert-manager-operator:
+      name: openshift-cert-manager-operator
+      namespace: cert-manager-operator
+      channel: stable-v1.13
+      csv: cert-manager-operator.v1.13.1
+
+    amq7-interconnect-operator:
+      name: amq7-interconnect-operator
+      namespace: service-telemetry
+      channel: 1.10.x
+      csv: amq7-interconnect-operator.v1.10.19
+
+    service-telemetry-operator:
+      name: service-telemetry-operator
+      namespace: service-telemetry
+      channel: stable-1.5
+      csv: service-telemetry-operator.v1.5.1725952694
+
+    grafana-operator:
+      name: grafana-operator
+      namespace: service-telemetry
+      channel: v4
+      source: community-operators
+      csv: grafana-operator.v4.10.1
+
+    amq-streams:
+      name: amq-streams
+      namespace: kafka-cluster 
+      channel: amq-streams-2.6.x
+      csv: amqstreams.v2.6.0-2
+
+    openshift-logging:
+      namespace: openshift-logging
+      name: cluster-logging
+      source: redhat-operators
+      channnel: stable-5.9 
+      csv: cluster-logging.v5.9.8
+
+    topology-aware-lifecycle-manager:
+      name: topology-aware-lifecycle-manager
+      namespace: openshift-operators 
+      channel: stable
+      csv: topology-aware-lifecycle-manager.v4.14.5
+
+    ansible-automation-platform-operator:
+      name: ansible-automation-platform-operator
+      namespace: ansible-automation-platform 
+      source: redhat-operators
+      channel: stable-2.4-cluster-scoped
+      csv: aap-operator.v2.4.0-0.1730153340
+
+    cincinnati-operator:
+      name: cincinnati-operator
+      namespace: openshift-update-service
+      source: redhat-operators
+      channel: v1
+      csv: update-service-operator.v5.0.3
+
+    metallb-operator:
+      name: metallb-operator
+      namespace: metallb-system
+      source: redhat-operators
+      channel: stable
+      csv: metallb-operator.v4.14.0-202410100109
+
+    rhacs-operator:
+      name: rhacs-operator
+      namespace: rhacs-operator
+      source: redhat-operators
+      channel: rhacs-4.4
+      csv: rhacs-operator.v4.4.5
+
+    redhat-oadp-operator:
+      name: redhat-oadp-operator
+      namespace: openshift-adp
+      channel: stable-1.2
+      csv: oadp-operator.v1.2.5
+
+  projects:
+  - hub
+
+  applications:
+    apiserver-ingress-certs:
+      name: apiserver-ingress-certs
+      path: charts/mgmt-hub/apiserver-ingress-certs
+      project: hub
+
+    authentication:
+      name: authentication
+      namespace: openshift-config
+      path: charts/mgmt-hub/authentication
+      project: hub
+
+    nmstate:
+      name: nmstate
+      namespace: openshift-nmstate
+      path: charts/mgmt-hub/nmstate  
+      project: hub
+
+    lso:
+      name: local-storage 
+      namespace: openshift-local-storage
+      path: charts/mgmt-hub/lso
+      project: hub  
+      
+    odf:
+      name: odf
+      namespace: openshift-storage
+      path: charts/mgmt-hub/openshift-data-foundations  
+      project: hub
+
+    cnv:
+      name: kubevirt-hyperconverged
+      namespace: openshift-cnv
+      path: charts/mgmt-hub/cnv  
+      project: hub
+
+    logging:
+      name: logging
+      namespace: openshift-logging
+      path: charts/mgmt-hub/logging
+      project: hub
+
+    ansible:
+      name: ansible
+      path: charts/mgmt-hub/ansible
+      project: hub
+
+    vms:
+      name: vms
+      namespace: mgmt-apps 
+      project: hub
+      path: charts/mgmt-hub/vm-on-bm
+
+    console:
+      name: console
+      path: charts/mgmt-hub/console
+      project: hub
+
+    quay:
+      name: quay
+      path: charts/mgmt-hub/quay
+      project: hub
+
+    perf-profile:
+      name: perf-profile
+      project: hub
+      path: charts/mgmt-hub/perf-profile
+
+    default-project-template:
+      name: default-project-template
+      project: hub
+      path: charts/mgmt-hub/default-project-template
+
+    acm:
+      name: acm
+      namespace: open-cluster-management
+      project: hub
+      path: charts/mgmt-hub/acm
+      ignoreDifferences:
+      - group: internal.open-cluster-management.io
+        kind: ManagedClusterInfo
+        jsonPointers:
+        - /spec/loggingCA
+
+    kafka:
+      name: kafka
+      namespace: kafka-cluster
+      path: charts/mgmt-hub/kafka
+      project: hub
+
+    monitoring:
+      name: monitoring
+      namespace: prom-kafka-adapter
+      path: charts/mgmt-hub/monitoring
+      project: hub  
+
+    stf:
+      name: stf
+      path: charts/mgmt-hub/stf
+      project: hub
+ 
+    gitops:
+      name: gitops
+      path: charts/mgmt-hub/gitops
+      project: hub
+
+    ztp:
+      name: ztp
+      namespace: multicluster-engine
+      path: charts/mgmt-hub/ztp
+      project: hub
+
+    metallb:
+      name: metallb
+      namespace: metallb-system
+      path: charts/mgmt-hub/metallb
+      project: hub
+
+    # Required if managed clusters are disconnected and are going to perform an OCP upgrade
+    osus:
+      name: osus
+      namespace: openshift-update-service
+      path: charts/mgmt-hub/osus
+      project: hub
+
+# Variables for Charts/Playbooks
+  # Go to README.md to get expected variables and examples
+
+mgmt:
+  cluster:
+    name: mgmt2
+    location: dc
+    domain: domain.es
+    enableUnsealVault: false
+    mgmt_location: mgmt1 
+   
+  proxy:
+    host: 
+    port: 
+    ca_bundle: 
+
+  authentication:
+    htpasswd:
+      admin: ""
+    ldap:
+      bind_password: 
+      url: 
+      bind_dn: 
+      groups_base_dn: 
+      users_base_dn: 
+      group_membership: 
+      groups_whitelist:
+      - ""
+      - ""
+      - ""
+      sync_schedule: "*/15 * * * *"
+
+  apps:
+    provisioner_ip: 
+    ns: mano-apps
+    nad_name: apps-nad
+    subnet: 
+    subnet_len: 
+    subnet_gw: 
+    domain: 
+    dns_server_ip: 
+
+  lso:
+    maxDeviceCount: 8
+
+  odf:
+    mds:
+      limits:
+        cpu: "3"
+        memory: "8Gi"
+      requests:
+        cpu: "3"
+        memory: "8Gi"
+    storageDeviceSets:
+      count: 8
+      limits:
+        cpu: "2"
+        memory: "5Gi"
+      requests:
+        cpu: "2"
+        memory: "5Gi"
+
+  idm:
+  - name: idm-r1
+    qcow: 
+    uuid: 
+    app_name: idm-server
+    domain: 
+    user: 
+    password:
+    ip: 
+    hostname: 
+    ssh_authorized_key: ""
+  - name: idm-r2
+    qcow: 
+    uuid: 
+    app_name: idm-server
+    domain: 
+    user: 
+    password: 
+    ip: 
+    hostname: 
+    ssh_authorized_key: ""
+
+  satellite:
+    qcow: 
+    uuid: 
+    app_name: sat-server
+    domain: 
+    user:
+    password: 
+    ip: 
+    hostname: 
+    ssh_authorized_key: ""
+
+  kafka:
+    topics:
+      - 
+
+  stf:
+    cloudNames: 
+      - 
+    serviceMonitors:
+      - ceil
+      - coll
+      - sens
+
+  gitops:
+    ztp_plugin_image: registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.14.4
+    ztp_instance_ns: ztp
+    openshift_gitops_api_version: argoproj.io/v1alpha1
+    multicluster_operators_subscription: registry.redhat.io/rhacm2/multicluster-operators-subscription-rhel8:v2.7
+    repoURL: 
+    core_ztp_repoToken: 
+
+  ztp:
+    jobTerminationGracePeriod: 300
+    serviceAccountName: mce-prereq-sa
+    rbac:
+      roles:
+        - name: mce-prereq
+          createRole: true
+          apiGroups:
+            - '""'
+            - 'metal3.io'
+          scope:
+            cluster: true
+          resources:
+            - namespace
+            - configmaps
+            - provisionings
+            - secrets
+          verbs:
+            - "get"
+            - "list"
+            - "patch"
+            - "update"
+            - "create"
+            - "edit"
+      roleBindings:
+        - name: mce-prereq-rolebinding
+          createBinding: true
+          scope:
+            cluster: true
+            namespace: ""
+          subjects:
+            kind: ServiceAccount
+            name: mce-prereq-sa
+            namespace: multicluster-engine
+            apiGroup: ""
+          roleRef:
+            kind: ClusterRole
+            name: mce-prereq
+
+  console:
+    plugins:
+    - odf-console
+    - kubevirt-plugin
+    - mce
+    - acm
+    - nmstate-console-plugin
+    - monitoring-plugin
+
+  quay:
+    fqdn: 
+    components:
+    - kind: clair
+      managed: true
+      overrides:
+        volumeSize: 100Gi
+    - kind: postgres
+      managed: true
+      overrides:
+        volumeSize: 500Gi
+    - kind: objectstorage
+      managed: true
+    - kind: redis
+      managed: true
+    - kind: horizontalpodautoscaler
+      managed: true
+    - kind: route
+      managed: true
+    - kind: monitoring
+      managed: false
+    - kind: tls
+      managed: true
+    - kind: mirror
+      managed: true
+    - kind: quay
+      managed: true
+    - kind: clairpostgres	
+      managed: true
+    param:
+      FEATURE_USER_INITIALIZE: true
+      BROWSER_API_CALLS_XHR_ONLY: false
+      ALLOW_PULLS_WITHOUT_STRICT_LOGGING: false
+      DEFAULT_TAG_EXPIRATION: 2w
+      ENTERPRISE_LOGO_URL: /static/img/RH_Logo_Quay_Black_UX-horizontal.svg
+      FEATURE_BUILD_SUPPORT: false
+      FEATURE_DIRECT_LOGIN: true
+      FEATURE_MAILING: false
+      REGISTRY_TITLE: Red Hat Quay
+      REGISTRY_TITLE_SHORT: Red Hat Quay
+      TAG_EXPIRATION_OPTIONS:
+      - 2w
+      TEAM_RESYNC_STALE_TIME: 60m
+      SERVER_HOSTNAME: 
+      TESTING: false
+      # LDAP Parameters
+      AUTHENTICATION_TYPE: LDAP
+      LDAP_ADMIN_DN: 
+      LDAP_ADMIN_PASSWD: 
+      LDAP_ALLOW_INSECURE_FALLBACK: true
+      LDAP_BASE_DN:
+      - 
+      LDAP_EMAIL_ATTR: mail
+      LDAP_UID_ATTR: uid
+      LDAP_URI: 
+      LDAP_USER_RDN:
+      - cn=users
+      - cn=accounts
+      FEATURE_TEAM_SYNCING: true
+      LDAP_USER_FILTER: 
+      LDAP_SUPERUSER_FILTER: 
+      FEATURE_SUPERUSERS_FULL_ACCESS: true
+
+  apiserver:
+    tls:
+      crt: 
+      key: 
+
+  ingress:
+    tls:
+      crt: 
+      key: 

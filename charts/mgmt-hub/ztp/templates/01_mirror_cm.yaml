@@ -1,0 +1,175 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mirror-registry-config-map-src
+  namespace: multicluster-engine
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    agent-install.openshift.io/watch: 'true'
+    cluster.open-cluster-management.io/backup: 'true'
+data:
+  registries.conf: |+
+    unqualified-search-registries = ["registry.access.redhat.com", "docker.io"]
+
+        [[registry]]
+           prefix = ""
+           location = "quay.io/openshift-release-dev/ocp-release"
+           mirror-by-digest-only = true
+
+           [[registry.mirror]]
+           location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift/release-images"
+
+        [[registry]]
+           prefix = ""
+           location = "quay.io/openshift-release-dev/ocp-v4.0-art-dev"
+           mirror-by-digest-only = true
+
+           [[registry.mirror]]
+           location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift/release"
+
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/advanced-cluster-security"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/advanced-cluster-security"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/container-native-virtualization"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/container-native-virtualization"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/multicluster-engine"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/multicluster-engine"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/odf4"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/odf4"
+         
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/openshift-istio"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift-istio"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/openshift-logging"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift-logging"
+         
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/openshift-service-mesh"
+          mirror-by-digest-only = true
+          
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift-service-mesh"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/openshift4"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift4"
+       
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/quay"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/quay"
+         
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/rhacm2"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/rhacm2"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/rhceph"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/rhceph"
+        
+       [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/rhel8"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/rhel8"
+        
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/rhosdt"
+          mirror-by-digest-only = true
+        
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/rhosdt"
+        
+         [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/cert-manager"
+          mirror-by-digest-only = true
+
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/cert-manager"
+
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/compliance"
+          mirror-by-digest-only = true
+
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/compliance"
+
+        [[registry]]
+          prefix = ""
+          location = "registry.redhat.io/custom-metrics-autoscaler"
+          mirror-by-digest-only = true
+
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/custom-metrics-autoscaler"
+
+        [[registry]]
+          prefix = ""
+          location = "registry.connect.redhat.com/intel"
+          mirror-by-digest-only = true
+
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/intel"
+
+        [[registry]]
+          prefix = ""
+          location = "quay.mirror/ocp/redhat"
+          mirror-by-digest-only = true
+
+          [[registry.mirror]]
+            location = "quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/redhat"
+

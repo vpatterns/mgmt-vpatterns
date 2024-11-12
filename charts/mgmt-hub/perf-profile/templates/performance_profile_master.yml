@@ -1,0 +1,16 @@
+---
+apiVersion: performance.openshift.io/v2
+kind: PerformanceProfile
+metadata:
+  name: systemreservedset-master
+  annotations:
+    kubeletconfig.experimental: |
+      {"systemReserved": {"cpu": "16000m","memory": "32Gi"},
+       "kubeReserved":{"cpu": "16000m","memory": "32Gi"}}
+spec:
+  cpu:
+    reserved: 0-3,28-31,56-59,84-87
+    isolated: 4-27,32-55,60-83,88-111
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+

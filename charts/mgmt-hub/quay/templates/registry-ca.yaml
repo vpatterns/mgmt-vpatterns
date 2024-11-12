@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registries-ca-bundle
+  namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+data:
+  {{ .Values.mgmt.quay.fqdn }}: {{ .Values.mgmt.authentication.ldap.crt }}

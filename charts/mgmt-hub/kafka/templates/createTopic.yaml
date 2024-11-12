@@ -1,0 +1,18 @@
+{{- range .Values.kafka.topics }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: mano-kafka-cluster
+  name: {{ .name }}
+  namespace: kafka-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  config:
+    retention.ms: 180000
+  partitions: 1
+  replicas: 1
+  topicName: {{ .name }}
+{{- end}}

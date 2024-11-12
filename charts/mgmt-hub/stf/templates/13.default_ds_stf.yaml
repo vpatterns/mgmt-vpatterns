@@ -1,0 +1,16 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: default-datasources-stf
+  namespace: service-telemetry
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  datasources:
+    - name: STFPrometheus
+      url: 'http://stf-monitoring-stack-prometheus.service-telemetry.svc:9090'
+      basicAuth: false
+      isDefault: true
+      version: 1
+      type: prometheus
+  name: default-ds-stf.yaml

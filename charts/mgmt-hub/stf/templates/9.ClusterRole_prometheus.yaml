@@ -1,0 +1,31 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: stf-monitoring-prometheus
+  annotations:
+    operator-sdk/primary-resource: service-telemetry/default
+    operator-sdk/primary-resource-type: ServiceTelemetry.infra.watch
+    argocd.argoproj.io/sync-wave: "15"
+rules:
+  - verbs:
+      - get
+    nonResourceURLs:
+      - /metrics
+  - verbs:
+      - create
+    apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+  - verbs:
+      - create
+    apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+  - verbs:
+      - get
+    apiGroups:
+      - ''
+    resources:
+      - namespaces

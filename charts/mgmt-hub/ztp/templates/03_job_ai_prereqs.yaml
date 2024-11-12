@@ -1,0 +1,61 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: mce-prereq-job
+  namespace: multicluster-engine
+spec:
+  template:
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      serviceAccount: {{ .Values.mgmt.ztp.serviceAccountName }}
+      serviceAccountName: {{ .Values.mgmt.ztp.serviceAccountName }}
+      terminationGracePeriodSeconds: {{ .Values.mgmt.ztp.jobTerminationGracePeriod }}
+      containers:
+      - image: {{ .Values.global.params.job_image }}
+        name: mce-prereq-job
+        resources: {}  
+        command:
+        - /bin/bash
+        - -c
+        - |
+          #
+          # THIS SCRIPT DOES:
+          # - CONCATENATE THE DEFAULT PULL SECRET WITH THE CREDENTIALS FOR QUAY AND SAVE IT IN A NEW SECRET
+          # - CONCATENATE THE CA BUNDLE WITH THE INGRESS CERT AND THE EXISTING MIRROR LIST IN ANOTHER CONFIGMAP
+          #
+          echo "copy pull secret CM to MCE namespace"
+          echo "extract pull secret"
+          oc -n openshift-config extract secret/pull-secret --confirm --to=/tmp/
+
+          # Remove credentials for cloud.openshift.com from pull-secret
+          # to avoid insight operator reporting errors in disconnected env
+          #jq 'del(.auths|."cloud.openshift.com")' < /tmp/.dockerconfigjson > /tmp/.dockerconfigjson-upd
+
+          host_fqdn=quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}; echo $host_fqdn
+          b64auth=$(echo -n 'quayadmin:admin' | base64 -w0); echo $b64auth
+          AUTHSTRING="{\"$host_fqdn\": {\"auth\": \"$b64auth\",\"email\": \"\"}}"; echo $AUTHSTRING
+
+          jq -c ".auths += $AUTHSTRING" < /tmp/.dockerconfigjson > /tmp/.dockerconfigjson-upd
+
+          echo "create new pull secret"
+          oc -n multicluster-engine create secret generic assisted-deployment-pull-secret \
+            --type=kubernetes.io/dockerconfigjson \
+            --from-file=.dockerconfigjson=/tmp/.dockerconfigjson-upd
+
+          echo "Create mirror configmap"
+          echo "Extract Quay cert"
+          oc -n quay-enterprise extract configmap/kube-root-ca.crt --to=/tmp/
+
+          echo "Extract Temp config map"
+          oc -n multicluster-engine extract cm/mirror-registry-config-map-src --to=/tmp/
+
+          echo "Create mirror config map"
+          oc -n multicluster-engine create configmap mirror-registry-config-map \
+            --from-file=ca-bundle.crt=/tmp/ca.crt \
+            --from-file=registries.conf=/tmp/registries.conf
+
+          echo "All done! Hooray!"

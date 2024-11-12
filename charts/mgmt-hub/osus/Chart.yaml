@@ -1,0 +1,6 @@
+apiVersion: v2
+name: osus
+description: A Helm chart to configure OSUS
+type: application
+version: 0.1.0
+appVersion: "1.16.0"

@@ -1,0 +1,60 @@
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: fabric-mgr-nad
+  namespace: fabric-manager
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: bridge.network.kubevirt.io/br-fabric-mgr
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  config: '{
+    "cniVersion": "0.3.1",
+    "name": "fabric-mgr-nad",
+    "plugins": [
+      {
+        "type": "bridge", 
+        "bridge": "br-fabric-mgr"
+      }
+    ]
+  }'
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: apps-nad
+  namespace: mano-apps
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: bridge.network.kubevirt.io/br-apps
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  config: '{
+    "cniVersion": "0.3.1",
+    "name": "apps-nad",
+    "plugins": [
+      {
+        "type": "bridge",
+        "bridge": "br-apps"
+      }
+    ]
+  }'
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: cgextendido-ctrl
+  namespace: mano-apps
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: bridge.network.kubevirt.io/br-cgextendido-ctrl
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  config: '{
+    "cniVersion": "0.3.1",
+    "name": "cgextendido-ctrl",
+    "plugins": [
+      {
+        "type": "bridge",
+        "bridge": "br-cgextendido-ctrl"
+      }
+    ]
+  }'

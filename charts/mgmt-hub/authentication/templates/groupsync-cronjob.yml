@@ -1,0 +1,119 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: system:ldap-group-syncers
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ldap-group-syncer
+subjects:
+- kind: ServiceAccount
+  name: ldap-group-sync-sa
+  namespace: openshift-authentication
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ldap-group-syncer
+rules:
+  - apiGroups:
+      - ''
+      - user.openshift.io
+    resources:
+      - groups
+    verbs:
+      - get
+      - list
+      - create
+      - update
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: ldap-group-sync-config
+  namespace: openshift-authentication
+data:
+  ldap-group-sync.yaml: |
+    ---
+    kind: LDAPSyncConfig
+    apiVersion: v1
+    url: ldap://{{ .Values.mgmt.authentication.ldap.url }}
+    insecure: true
+    bindDN: {{ .Values.mgmt.authentication.ldap.bind_dn }}
+    bindPassword:
+      file: /etc/secrets/bind_password
+    rfc2307:
+      groupsQuery:
+        baseDN: {{ .Values.mgmt.authentication.ldap.groups_base_dn }}
+        derefAliases: never
+        filter: (objectClass=groupofnames)
+      groupUIDAttribute: dn
+      groupNameAttributes: [cn]
+      groupMembershipAttributes: [member]
+      usersQuery:
+        baseDN: {{ .Values.mgmt.authentication.ldap.users_base_dn }}
+        derefAliases: never
+      userNameAttributes: [uid]
+      userUIDAttribute: dn
+  whitelist.txt: |
+    {{- range $val := .Values.mgmt.authentication.ldap.groups_whitelist }}
+    {{ $val }}
+    {{- end }}
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: ldap-group-sync-creds
+  namespace: openshift-authentication
+type: Opaque
+stringData:
+  bind_password: {{ .Values.mgmt.authentication.ldap.bind_password }}
+---
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: ldap-group-sync-cronjob
+  namespace: openshift-authentication
+spec:
+  schedule: "{{ .Values.mgmt.authentication.ldap.sync_schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+          - name: ldap-group-sync
+            image: registry.redhat.io/openshift4/ose-tools-rhel8:v4.12
+            command:
+            - /bin/bash
+            - -c
+            - oc --loglevel 5 adm groups sync --sync-config=/etc/config/ldap-group-sync.yaml --confirm
+              $([ -s /etc/config/whitelist.txt ] && echo --whitelist=/etc/config/whitelist.txt)
+            volumeMounts:
+            - mountPath: /etc/config
+              name: ldap-sync-volume
+            - mountPath: /etc/secrets
+              name: ldap-bind-password
+          volumes:
+          - name: ldap-sync-volume
+            configMap:
+              name: ldap-group-sync-config
+          - name: ldap-bind-password
+            secret:
+              secretName: ldap-group-sync-creds
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+          activeDeadlineSeconds: 500
+          dnsPolicy: ClusterFirst
+          serviceAccountName: ldap-group-sync-sa
+  startingDeadlineSeconds: 60
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: ldap-group-sync-sa
+  namespace: openshift-authentication

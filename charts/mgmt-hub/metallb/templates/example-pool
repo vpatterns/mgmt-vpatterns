@@ -1,0 +1,10 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: addresspool-dummy
+  namespace: metallb-system
+spec:
+  addresses:
+    - 10.1.1.1-10.1.1.10
+  autoAssign: false

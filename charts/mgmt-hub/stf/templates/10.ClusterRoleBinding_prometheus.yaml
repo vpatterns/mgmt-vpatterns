@@ -1,0 +1,16 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitor-stf
+  annotations:
+    operator-sdk/primary-resource: service-telemetry/default
+    operator-sdk/primary-resource-type: ServiceTelemetry.infra.watch
+    argocd.argoproj.io/sync-wave: "15"
+subjects:
+  - kind: ServiceAccount
+    name: stf-monitoring-stack-prometheus
+    namespace: service-telemetry
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: stf-monitoring-prometheus

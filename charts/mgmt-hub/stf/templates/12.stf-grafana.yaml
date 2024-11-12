@@ -1,0 +1,41 @@
+﻿apiVersion: integreatly.org/v1alpha1
+kind: Grafana
+metadata:
+  name: stf-grafana
+  namespace: service-telemetry
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  baseImage: 'docker.io/grafana/grafana:8.1.2'
+  client:
+    preferService: true
+  config:
+    auth:
+      disable_login_form: true
+      disable_signout_menu: false
+    auth.anonymous:
+      enabled: true
+      org_role: Admin
+    log:
+      level: warn
+      mode: console
+  dashboardLabelSelector:
+    - matchExpressions:
+        - key: app
+          operator: In
+          values:
+            - grafana
+  ingress:
+    enabled: true
+    targetPort: grafana
+  service:
+    ports:
+      - name: web
+        port: 3002
+        protocol: TCP
+        targetPort: https
+  serviceAccount:
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.primary: >-
+        {"kind": "OAuthRedirectReference", "apiVersion": "v1", "reference":
+        {"kind": "Route", "name": "grafana-route"}}

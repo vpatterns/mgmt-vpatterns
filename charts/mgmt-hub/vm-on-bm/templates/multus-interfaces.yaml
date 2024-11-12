@@ -1,0 +1,122 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: multus-interfaces
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ''
+  desiredState:
+    interfaces:
+    - name: bond1 
+      description: Bond enslaving ens1f1 and ens4f0
+      type: bond 
+      state: up 
+      ipv4:
+        dhcp: false 
+        enabled: false 
+      link-aggregation:
+        mode: 802.3ad
+        options:
+          miimon: '100' 
+          lacp_rate: 'fast'
+        slaves: 
+        - ens1f1
+        - ens4f0
+    - name: bond1.201
+      description: I-MANO-Apps
+      type: vlan
+      state: up
+      vlan:
+        base-iface: bond1
+        id: 201
+    - name: br-apps
+      type: linux-bridge
+      state: up
+      ipv4:
+        dhcp: false
+        enabled: false
+      bridge:
+        options:
+          stp:
+            enabled: false
+        port:
+          - name: bond1.201
+    - name: bond1.210
+      description: cgextendido-ctrl
+      type: vlan
+      state: up
+      vlan:
+        base-iface: bond1
+        id: 210
+    - name: br-cgext-ctrl
+      type: linux-bridge
+      state: up
+      ipv4:
+        dhcp: false
+        enabled: false
+      bridge:
+        options:
+          stp:
+            enabled: false
+        port:
+          - name: bond1.210
+    - name: eno5.100
+      description: I-MANO-Fabric-Mgmt
+      type: vlan
+      state: up
+      vlan:
+        base-iface: eno5
+        id: 100
+    - name: br-fabric-mgr
+      type: linux-bridge
+      state: up
+      ipv4:
+        dhcp: false
+        enabled: false
+      bridge:
+        options:
+          stp:
+            enabled: false
+        port:
+          - name: eno5.100
+    - name: eno5.103
+      description: I-MANO-SrvMgmt
+      type: vlan
+      state: up
+      vlan:
+        base-iface: eno5
+        id: 103
+    - name: br-srvmgmt
+      type: linux-bridge
+      state: up
+      ipv4:
+        dhcp: false
+        enabled: false
+      bridge:
+        options:
+          stp:
+            enabled: false
+        port:
+          - name: eno5.103
+    - name: bond1.211
+      description: cgextendido-ngn
+      type: vlan
+      state: up
+      vlan:
+        base-iface: bond1
+        id: 211
+    - name: br-cgext-ngn
+      type: linux-bridge
+      state: up
+      ipv4:
+        dhcp: false
+        enabled: false
+      bridge:
+        options:
+          stp:
+            enabled: false
+        port:
+          - name: bond1.211
+          

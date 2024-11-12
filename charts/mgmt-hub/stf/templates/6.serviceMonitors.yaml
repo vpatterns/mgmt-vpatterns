@@ -1,0 +1,40 @@
+{{- range $cloudName := $.Values.mgmt.stf.cloudNames -}}
+{{- range $.Values.mgmt.stf.serviceMonitors }}
+apiVersion: monitoring.rhobs/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: smart-gateway
+  name: default-{{ $cloudName }}-{{ . }}-meter
+  namespace: service-telemetry
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    interval: 30s
+    metricRelabelings:
+    - action: labeldrop
+      regex: pod
+    - action: labeldrop
+      regex: namespace
+    - action: labeldrop
+      regex: instance
+    - action: labeldrop
+      regex: job
+    - action: labeldrop
+      regex: publisher
+    port: prom-https
+    scheme: https
+    tlsConfig:
+      ca:
+        configMap:
+          name: serving-certs-ca-bundle
+          key: service-ca.crt
+      serverName: default-{{ $cloudName }}-{{ . }}-meter.service-telemetry.svc
+  selector:
+    matchLabels:
+      app: smart-gateway
+      smart-gateway: default-{{ $cloudName }}-{{ . }}-meter
+{{- end }}
+{{- end -}}

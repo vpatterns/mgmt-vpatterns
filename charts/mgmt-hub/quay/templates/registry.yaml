@@ -1,0 +1,12 @@
+---
+apiVersion: quay.redhat.com/v1
+kind: QuayRegistry
+metadata:
+  name: quay-registry
+  namespace: quay-enterprise
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  components:
+    {{- toYaml .Values.mgmt.quay.components | nindent 2 }}
+  configBundleSecret: quay-config-bundle-ldap

@@ -1,0 +1,10 @@
+---
+apiVersion: config.openshift.io/v1
+kind: Image
+metadata:
+  name: cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  additionalTrustedCA:
+    name: registries-ca-bundle

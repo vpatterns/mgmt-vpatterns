@@ -1,0 +1,52 @@
+---
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+  name: ocs-storagecluster
+  namespace: openshift-storage
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  flexibleScaling: false
+  resources:
+    mds:
+      limits:
+        cpu: {{ .Values.mgmt.odf.mds.limits.cpu | squote }}
+        memory: {{ .Values.mgmt.odf.mds.limits.memory }}
+      requests:
+        cpu: {{ .Values.mgmt.odf.mds.requests.cpu | squote }}
+        memory: {{ .Values.mgmt.odf.mds.requests.memory }}
+  monDataDirHostPath: /var/lib/rook
+  managedResources:
+    cephBlockPools:
+      reconcileStrategy: manage
+    cephFilesystems:
+      reconcileStrategy: manage
+    cephObjectStoreUsers:
+      reconcileStrategy: manage
+    cephObjectStores:
+      reconcileStrategy: manage
+  multiCloudGateway:
+    reconcileStrategy: manage
+  storageDeviceSets:
+  - count: {{ .Values.mgmt.odf.storageDeviceSets.count }}
+    dataPVCTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: "1"
+        storageClassName: localblock
+        volumeMode: Block
+    name: ocs-deviceset
+    placement: {}
+    portable: false
+    replica: 3
+    resources:
+      limits:
+        cpu: {{ .Values.mgmt.odf.storageDeviceSets.limits.cpu | squote }}
+        memory: {{ .Values.mgmt.odf.storageDeviceSets.limits.memory }}
+      requests:
+        cpu: {{ .Values.mgmt.odf.storageDeviceSets.requests.cpu | squote }}
+        memory: {{ .Values.mgmt.odf.storageDeviceSets.requests.memory }}

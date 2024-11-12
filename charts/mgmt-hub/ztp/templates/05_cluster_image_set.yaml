@@ -1,0 +1,7 @@
+apiVersion: hive.openshift.io/v1
+kind: ClusterImageSet
+metadata:
+  name: openshift-v4.14.38-mirror
+spec:
+  releaseImage: quay.apps.{{ .Values.mgmt.cluster.name }}.{{ .Values.mgmt.cluster.location }}.{{ .Values.mgmt.cluster.domain }}/ocp/openshift/release-images:4.14.38-x86_64
+
