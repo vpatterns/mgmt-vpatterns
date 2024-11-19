@@ -23,7 +23,7 @@ spec:
   mirrorRegistryRef:
     name: mirror-registry-config-map
   osImages:
-    - openshiftVersion: "4.12"
+    - openshiftVersion: "4.14"
       url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.14/4.14.34/rhcos-4.14.34-x86_64-live.x86_64.iso
       rootFSUrl: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.14/4.14.34/rhcos-4.14.34-x86_64-live-rootfs.x86_64.img
       # pick version from https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.12.55/release.txt
